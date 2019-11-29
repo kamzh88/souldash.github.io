@@ -121,26 +121,43 @@
                     var friendsData = [];
                     // <a href="/api/friends">API Friends List</a> 
                     $.get("/api/friends", newSurvey,
-                    function(Data) {
-                        
-                        friendsData.push(Data);
-                    })
-
-                    compare(newSurvey, friendsData);
-                    
+                        function (data) {
+                            return data;
+                        }).then(function (friendsData) {
+                            compare(newSurvey, friendsData);
+                        });
                 })
             }
-
-            function compare(newSurvey,friendsData) {
-                console.log(friendsData);
-                var userValue = [];                for (var i = 0; i < newSurvey.result.length; i++) {
-                   
+            function compare(newSurvey, friendsData) {
+                
+                var userValue = [];
+                for (var i = 0; i < newSurvey.result.length; i++) {
                     userValue.push(parseInt(newSurvey.result[i].value))
                 }
                 //total value of user
-                var totalUserValue = userValue.reduce((a,b)=>a+b,0);
-                // console.log(totalUserValue);
+                var totalUserValue = userValue.reduce((a, b) => a + b, 0);
+                console.log(totalUserValue);
                 
+                //friendsArray Data
+                // var result = friendsData.map(function (item, idx) {
+                //     return item.scores.reduce(function (a, b) {
+                //         return a + b;
+                //     });
+                // });
+                // console.log('friendsData:', friendsData);
+                var result = [];
+                for (var i = 0; i < friendsData.length; i++) {
+                    var count = 0;
+                    var scores = friendsData[i].scores;
+                    for (var j = 0; j < scores.length; j++) {
+                        count += scores[j]; 
+                    }
+                    result.push(count);
+                }
+                console.log(result);
+
+
+
             }
             start();
         })
