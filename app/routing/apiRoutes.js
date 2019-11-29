@@ -6,7 +6,7 @@ module.exports = function(app) {
         res.json(friendsData);
     })
 
-    app.post("/api/friends", function (req, res) {
-        friendsData.push(req.body);
-    })
+    // app.get("/api/about_me", function (req, res) {
+    //     aboutMe.push(req.body);
+    // })
 }

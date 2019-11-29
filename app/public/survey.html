@@ -39,7 +39,6 @@
     </div>
 
     <script src="https://code.jquery.com/jquery.js"></script>
-
     <script type="text/javascript">
         $(document).ready(function () {
             var questions = [
@@ -91,12 +90,58 @@
                     card.append("<h5><br>" + (i + 1) + ".  " + questions[i].question + "</h5>");
                     for (var j = 0; j < questions[i].answers.length; j++) {
                         card.append("<input type='radio' name='question-" + i +
-                            "' value='" + questions[i].answers[j] + "''> " + questions[i].answers[j] + "<br>");
+                            "' value=" + questions[i].answers[j] + "> " + questions[i].answers[j] + "<br>");
                     }
                 }
                 card.append("<br><button type='submit' class='btn btn-primary submit'>Submit</button>");
+                onclick();
             }
 
+            function onclick() {
+                $(".submit").on("click", function () {
+                    event.preventDefault();
+                    var result = [];
+                    for (var i = 0; i <= 9; i++) {
+                        var question = $('input[name="question-' + i + '"]');
+                        for (var j = 0; j <= 4; j++) {
+                            if (question[j].checked) {
+                                result.push({
+                                    questionNo: i + 1,
+                                    value: question[j].value
+                                });
+                            }
+                        }
+                    }
+                    var newSurvey = {
+                        name: $("#name").val().trim(),
+                        photo: $("#photo").val().trim(),
+                        result: result
+                    }
+                    // console.log(newSurvey);
+                    var friendsData = [];
+                    // <a href="/api/friends">API Friends List</a> 
+                    $.get("/api/friends", newSurvey,
+                    function(Data) {
+                        
+                        friendsData.push(Data);
+                    })
+
+                    compare(newSurvey, friendsData);
+                    
+                })
+            }
+
+            function compare(newSurvey,friendsData) {
+                console.log(friendsData);
+                var userValue = [];                for (var i = 0; i < newSurvey.result.length; i++) {
+                   
+                    userValue.push(parseInt(newSurvey.result[i].value))
+                }
+                //total value of user
+                var totalUserValue = userValue.reduce((a,b)=>a+b,0);
+                // console.log(totalUserValue);
+                
+            }
             start();
         })
     </script>
