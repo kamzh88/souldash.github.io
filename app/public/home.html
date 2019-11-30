@@ -33,9 +33,7 @@
 
   <script src="https://code.jquery.com/jquery.js"></script>
   <script type="text/javascript">
-
     function runFriendsQuery() {
-
       $.ajax({url: "/api/friends", method: "GET"})
       .then(function(friendsData) {
         console.log(friendsData);

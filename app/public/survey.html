@@ -194,7 +194,6 @@
                         // console.log("friends score" + friendsData[i].scores[j]);
                         var x = Math.abs(userValue[j] - friendsData[i].scores[j])
                         count += x
-
                         // console.log(x);
                     }
                     // console.log(count);
@@ -209,7 +208,8 @@
                 var picture = friendsData[arrayPosition].photo;
                 console.log(match);
                 $(".modal-title").append(match + " is your most compatible friend!");
-                $(".modal-body").append(picture);
+                 // <a href="/api/friends">API Friends List</a> 
+                $(".modal-body").append(`<a href=${picture}>Image Link</a>`);
             }
             start();
         })

@@ -1,7 +1,7 @@
 var friendsArray = [
     {
-        name: "Ahmed",
-        photo: "www.facebook.com/Ahmed",
+        name: "Joe",
+        photo: "www.facebook.com/Joe",
         scores: [
             5,
             5,
