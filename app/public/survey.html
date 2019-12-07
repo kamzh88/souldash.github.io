@@ -48,7 +48,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -117,100 +117,102 @@
             function onclick() {
                 $(".submit").on("click", function () {
                     event.preventDefault();
-                    var result = [];
+                    var score = [];
                     for (var i = 0; i <= 9; i++) {
                         var question = $('input[name="question-' + i + '"]');
                         for (var j = 0; j <= 4; j++) {
                             if (question[j].checked) {
-                                result.push({
-                                    questionNo: i + 1,
-                                    value: question[j].value
-                                });
+                                score.push(question[j].value);
                             }
                         }
                     }
                     var newSurvey = {
                         name: $("#name").val().trim(),
                         photo: $("#photo").val().trim(),
-                        result: result
+                        scores: score
                     }
-                    // console.log(newSurvey);
-                    var friendsData = [];
-                    // <a href="/api/friends">API Friends List</a> 
-                    $.get("/api/friends", newSurvey,
-                        function (data) {
-                            return data;
-                        }).then(function (friendsData) {
-                            compare(newSurvey, friendsData);
-                        });
+                    console.log(newSurvey);
+
+                    $.ajax("/api/friends", {
+                        type: "POST",
+                        data: newSurvey
+                    }).then(function (result) {
+
+                        var picture = result.friend.picturekey;
+                        var match = result.friend.matchkey;
+
+                        $(".modal-title").append(match + " is your most compatible friend!");
+                        $(".modal-body").append(`<a href=${picture}>Image Link</a>`);
+                    })
+
                 })
             }
-            function compare(newSurvey, friendsData) {
-                var userValue = [];
-                var questionNo = [];
-                for (var i = 0; i < newSurvey.result.length; i++) {
-                    questionNo.push(`${newSurvey.result[i].questionNo}`);
-                    userValue.push(`${parseInt(newSurvey.result[i].value)}`);
-                    // userValue.push = [
-                    //     {questionNo: newSurvey.result[i].questionNo},
-                    //     {answer: parseInt(newSurvey.result[i].value)}
-                    // ]   
-                };
-                //total value of user
-                // var totalUserValue = userValue.reduce((a, b) => a + b, 0);
-                // console.log(totalUserValue);
-                // console.log("Question Number: " + questionNo);
-                // console.log("Answer: " + userValue);
-                //friendsArray Data
-                // var result = friendsData.map(function (item, idx) {
-                //     return item.scores.reduce(function (a, b) {
-                //         return a + b;
-                //     });
-                // });
-                // console.log('friendsData:', friendsData);
-                // var result = [];
-                // for (var i = 0; i < friendsData.length; i++) {
-                //     var count = 0;
-                //     var scores = friendsData[i].scores;
-                //     for (var j = 0; j < scores.length; j++) {
-                //         count += scores[j]; 
-                //     }
-                //     result.push(count);
-                // }
-                // console.log(friendsData[0].scores);
-                var result = [];
-                var name = [];
-                var totalDiff = [];
-                for (var i = 0; i < friendsData.length; i++) {
-                    console.log(`
-            name: ${friendsData[i].name}
-            scores: ${friendsData[i].scores}`);
-                    result.push(friendsData[i].scores);
-                    name.push(friendsData[i].name)
-                    console.log(userValue);
-                    console.log(friendsData[i].scores);
-                    var count = 0;
-                    for (var j = 0; j < friendsData[i].scores.length; j++) {
-                        // console.log("friends score" + friendsData[i].scores[j]);
-                        var x = Math.abs(userValue[j] - friendsData[i].scores[j])
-                        count += x
-                        // console.log(x);
-                    }
-                    // console.log(count);
-                    totalDiff.push(count);
-                }
-                console.log("diff: " + totalDiff);
-                // console.log(Math.min(...totalDiff));
-                lowDiff = Math.min(...totalDiff);
-                arrayPosition = totalDiff.indexOf(lowDiff)
-                // console.log(totalDiff.indexOf(lowDiff));
-                var match = friendsData[arrayPosition].name;
-                var picture = friendsData[arrayPosition].photo;
-                console.log(match);
-                $(".modal-title").append(match + " is your most compatible friend!");
-                 // <a href="/api/friends">API Friends List</a> 
-                $(".modal-body").append(`<a href=${picture}>Image Link</a>`);
-            }
+            // function compare(newSurvey, friendsData) {
+            //     var userValue = [];
+            //     var questionNo = [];
+            //     for (var i = 0; i < newSurvey.score.length; i++) {
+            //         questionNo.push(`${newSurvey.score[i].questionNo}`);
+            //         userValue.push(`${parseInt(newSurvey.score[i].value)}`);
+            //         // userValue.push = [
+            //         //     {questionNo: newSurvey.score[i].questionNo},
+            //         //     {answer: parseInt(newSurvey.score[i].value)}
+            //         // ]   
+            //     };
+            //     //total value of user
+            //     // var totalUserValue = userValue.reduce((a, b) => a + b, 0);
+            //     // console.log(totalUserValue);
+            //     // console.log("Question Number: " + questionNo);
+            //     // console.log("Answer: " + userValue);
+            //     //friendsArray Data
+            //     // var score = friendsData.map(function (item, idx) {
+            //     //     return item.scores.reduce(function (a, b) {
+            //     //         return a + b;
+            //     //     });
+            //     // });
+            //     // console.log('friendsData:', friendsData);
+            //     // var score = [];
+            //     // for (var i = 0; i < friendsData.length; i++) {
+            //     //     var count = 0;
+            //     //     var scores = friendsData[i].scores;
+            //     //     for (var j = 0; j < scores.length; j++) {
+            //     //         count += scores[j]; 
+            //     //     }
+            //     //     score.push(count);
+            //     // }
+            //     // console.log(friendsData[0].scores);
+            //     var score = [];
+            //     var name = [];
+            //     var totalDiff = [];
+            //     for (var i = 0; i < friendsData.length; i++) {
+            // //         console.log(`
+            // // name: ${friendsData[i].name}
+            // // scores: ${friendsData[i].scores}`);
+            // //         score.push(friendsData[i].scores);
+            // //         name.push(friendsData[i].name)
+            // //         console.log(userValue);
+            // //         console.log(friendsData[i].scores);
+            //         var count = 0;
+            //         for (var j = 0; j < friendsData[i].scores.length; j++) {
+            //             // console.log("friends score" + friendsData[i].scores[j]);
+            //             var x = Math.abs(userValue[j] - friendsData[i].scores[j])
+            //             count += x
+            //             // console.log(x);
+            //         }
+            //         // console.log(count);
+            //         totalDiff.push(count);
+            //     }
+            //     console.log("diff: " + totalDiff);
+            //     // console.log(Math.min(...totalDiff));
+            //     lowDiff = Math.min(...totalDiff);
+            //     arrayPosition = totalDiff.indexOf(lowDiff)
+            //     // console.log(totalDiff.indexOf(lowDiff));
+            //     var match = friendsData[arrayPosition].name;
+            //     var picture = friendsData[arrayPosition].photo;
+            //     // console.log(match);
+            //     $(".modal-title").append(match + " is your most compatible friend!");
+            //      // <a href="/api/friends">API Friends List</a> 
+            //     $(".modal-body").append(`<a href=${picture}>Image Link</a>`);
+            // }
             start();
         })
     </script>
